@@ -8,7 +8,7 @@ router.get('/:code', async (req, res) => {
     if (url) {
       return res.redirect(url.longUrl);
     } else {
-      return res.status(404).json('No url found');
+      res.render("404page.ejs")
     }
   } catch (err) {
     console.error(err);
