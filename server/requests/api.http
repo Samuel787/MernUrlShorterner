@@ -2,5 +2,6 @@ POST http://localhost:5000/api/url/shorten
 Content-Type:  application/json
 
 {
-    "longUrl": "https://react-bootstrap.github.io/components/input-group/"
+    "longUrl": "https://react-bootstrap.github.io/components/input-group/",
+    "validNum": 5
 }

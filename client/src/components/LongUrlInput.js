@@ -6,10 +6,17 @@ const LongUrlInput = () => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const [input, setInput] = useState("");
+    const [numTimes, setNumTimes] = useState(-1);
     const [isSuccess, setIsSuccess] = useState(false);
     const [modalMessage, setModalMessage] = useState("");
 
     const handleShortenUrl = () => {
+        if (isNaN(+numTimes) || +numTimes < 1) {
+            setModalMessage("Please enter a number for number of times URL is valid")
+            setIsSuccess(false)
+            handleShow()
+            return
+        }
         fetch("http://localhost:5000/api/url/shorten", {
             method: "POST",
             headers:  {
@@ -17,7 +24,8 @@ const LongUrlInput = () => {
                 "Content-type": "application/json",
             },
             body: JSON.stringify({
-                "longUrl": input
+                "longUrl": input,
+                "numValid": numTimes
             })
         })
         .then(res => {
@@ -54,6 +62,12 @@ const LongUrlInput = () => {
             aria-placeholder="Enter URL to shorten"
             value = {input}
             onInput = {e => setInput(e.target.value)}
+            />
+            <FormControl
+            placeholder="Enter number of times usable"
+            aria-placeholder="Enter number of times usable"
+            value = {numTimes}
+            onInput = {e => setNumTimes(e.target.value)}
             />
             <Button variant="success" id="button-addon2" onClick={() => handleShortenUrl()}>
                 Let's go
