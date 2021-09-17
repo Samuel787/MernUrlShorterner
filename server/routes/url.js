@@ -5,7 +5,8 @@ const shortid = require('shortid');
 const config = require('config');
 const Url = require('../models/Url');
 router.post('/shorten', async (req, res) => {
-  const { longUrl } = req.body;
+  const { longUrl, numValid } = req.body;
+  
   const baseUrl = config.get('baseUrl');
   if (!validUrl.isUri(baseUrl)) {
     return res.status(401).json('Invalid base url');
@@ -14,8 +15,10 @@ router.post('/shorten', async (req, res) => {
   if (validUrl.isUri(longUrl)) {
     try {
       let url = await Url.findOne({ longUrl });
-
+      
       if (url) {
+        url.numValid = numValid
+        await url.save()
         res.json(url);
       } else {
         const shortUrl = baseUrl + '/' + urlCode;
@@ -24,11 +27,12 @@ router.post('/shorten', async (req, res) => {
           longUrl,
           shortUrl,
           urlCode,
+          numValid,
           date: new Date()
         });
 
         await url.save();
-
+        
         res.json(url);
       }
     } catch (err) {

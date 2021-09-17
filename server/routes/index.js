@@ -6,7 +6,13 @@ router.get('/:code', async (req, res) => {
     const url = await Url.findOne({ urlCode: req.params.code });
 
     if (url) {
-      return res.redirect(url.longUrl);
+      if (url.numValid >= 1) {
+        url.numValid = url.numValid - 1
+        await url.save()
+        return res.redirect(url.longUrl);
+      } else {
+        res.render("404page.ejs")
+      }
     } else {
       res.render("404page.ejs")
     }
